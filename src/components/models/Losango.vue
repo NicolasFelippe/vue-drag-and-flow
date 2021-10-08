@@ -9,11 +9,11 @@
     @click="$emit('select', obj)"
   >
     <div
-      class="dot"
+      :class="['dot', 'dot-losango' + obj.id]"
       :style="`background-color: ${
         topConnected ? '#1BA345' : '#ECF2F4'
       }; position: absolute; top: 0px; right: 0px; width: ${sizeConnectors}px; height: ${sizeConnectors}px; border-radius: 50px;`"
-      :id="obj.id + 'top'"
+      :id="obj.id + 'top-losango'"
       v-if="!start"
       @click="$emit('endLink', obj)"
       @drag="$emit('endLink', obj)"
@@ -36,7 +36,7 @@
 
     <div v-if="!end && condition">
       <div
-        class="dot dot-top"
+        class="dot"
         :style="`background-color: ${
           obj.link ? '#1BA345' : '#1BA345'
         }; position: absolute; top: 46px; left: -4px; width: ${sizeConnectors}px; height: ${sizeConnectors}px; border-radius: 50px`"

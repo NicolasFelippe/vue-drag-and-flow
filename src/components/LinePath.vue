@@ -109,10 +109,18 @@ export default {
     getRecursiveParentUntilProperty(object, property, value) {
       let result = { y: 0, x: 0 };
       let element = document.getElementById(object.node.id + object.pos);
-      console.log("element", element);
+      let dotTop = document.getElementById(object.node.id + 'top-losango');
+      if(dotTop){
+        this.isLosango = true
+        element = dotTop
+      } else {
+        this.isLosango = false
+      }
+      console.log("dotTop", dotTop);
       do {
         console.log("estou aqui");
-        result.y += element.offsetTop;
+        const plus = this.isLosango ?  12 : 2
+        result.y += element.offsetTop - plus;
         result.x += element.offsetLeft;
         element = element.offsetParent;
       } while (element && element[property].includes(value));
@@ -146,6 +154,8 @@ export default {
         "id",
         "app"
       );
+      console.log('this.toElement', this.toElement)
+      console.log('value', this.toElement)
       this.toElement.y2 = event.pageY - value.y;
       this.toElement.x2 = event.pageX - value.x;
       this.toElement.el = { clientWidth: 100 };
@@ -153,7 +163,9 @@ export default {
       this.update();
     },
     getLineHorizontalSize() {
-      return this.toElement.x2 + (this.isLeftToRight() ? -37 : -1);
+      const valueOn = this.isLosango ? -40 : 7
+      const valueOff = this.isLosango ? -47 : 1
+      return this.toElement.x2 + (this.isLeftToRight() ? valueOn : valueOff);
     },
     isLeftToRight() {
       return this.fromElement.x1 > this.toElement.x2;
@@ -183,6 +195,7 @@ export default {
       */
       let coefSize = 10;
       if (this.fromElement.id === this.toElement.id) {
+         console.log(' if')
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1}
           V${this.fromElement.y1 + coefSize}
@@ -204,6 +217,7 @@ export default {
           V${this.toElement.y2 - 5}
           `;
       } else if (this.toElement.y2 - this.fromElement.y1 > 20) {
+         console.log('else if')
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1} 
           V${this.getLineVerticalSize()} 
@@ -226,6 +240,7 @@ export default {
           sizeParam =
             this.toElement.el.clientWidth / this.fromElement.el.clientWidth;
         }
+        console.log('else')
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1}
           V${this.fromElement.y1 + coefSize}
