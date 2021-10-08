@@ -87,7 +87,7 @@ export default {
           start: true,
           backgroundColorIcon: '#1BA345',
           links: [],
-          type: 'rectangle'
+          type: 'circle'
         },
         {
           icon: ['fab','chrome'],
@@ -136,6 +136,13 @@ export default {
           content: 'Condition',
           condition: true,
           links: [],
+          type: 'losango'
+        },
+        {
+          icon: 'code-branch',
+          content: 'Condition 2',
+          condition: true,
+          links: [],
           type: 'rectangle'
         },
         {
@@ -145,7 +152,7 @@ export default {
           status: 'error',
           end: true,
           links: [],
-          type: 'rectangle'
+          type: 'circle'
         }
       ]
     }

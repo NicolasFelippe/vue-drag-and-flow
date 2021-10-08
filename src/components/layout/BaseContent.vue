@@ -1,40 +1,38 @@
 <template>
-    <component
-      ref="node"
-      :is="compModel"
-      :obj="model"
-      :width="width"
-      :height="height"
-      :icon="icon"
-      :backgroundColorIcon="backgroundColorIcon"
-      :topConnected="topConnected"
-      :bottomConnected="bottomConnected"
-      :status="status"
-      :noStatus="noStatus"
-      :start="start"
-      :end="end"
-      :condition="condition"
-      :group="group"
-      :color="color"
-      :active="active"
-      :iconOff="iconOff"
-      :status-color="getStatusColor"
-      @select="select"
-      @endLink="endLink"
-      @startLink="startLink"
-      @drag="$emit('drag', $event)"
-    />
+  <component
+    ref="node"
+    :is="compModel"
+    :obj="model"
+    :width="width"
+    :height="height"
+    :icon="icon"
+    :backgroundColorIcon="backgroundColorIcon"
+    :topConnected="topConnected"
+    :bottomConnected="bottomConnected"
+    :status="status"
+    :noStatus="noStatus"
+    :start="start"
+    :end="end"
+    :condition="condition"
+    :group="group"
+    :color="color"
+    :active="active"
+    :iconOff="iconOff"
+    :status-color="getStatusColor"
+    @select="select"
+    @endLink="endLink"
+    @startLink="startLink"
+    @drag="setDrag($event)"
+  />
 </template>
 <script>
-import Losango from "../models/Losango.vue";
-import Rectangle from "../models/Rectangle.vue";
+import CompLosango from "../models/Losango.vue";
+import CompRectangle from "../models/Rectangle.vue";
+import CompCircle from "../models/Circle.vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "BaseContent",
-  components: {
-    Losango,
-    Rectangle,
-  },
   props: {
     obj: {
       type: Object,
@@ -118,8 +116,18 @@ export default {
     },
   },
   computed: {
+    ...mapGetters('flow', ['getEndLink', 'getStartLink']),
     compModel() {
-      return this.type === "rectangle" ? Losango : Rectangle;
+      switch (this.type.toLowerCase()) {
+        case "rectangle":
+          return CompRectangle;
+        case "losango":
+          return CompLosango;
+        case "circle":
+          return CompCircle;
+        default:
+          return CompRectangle
+      }
     },
     getStatusColor() {
       return !this.status
@@ -130,22 +138,29 @@ export default {
     },
   },
   methods: {
-    startLink(posFrom, obj) {
-      console.log("posFrom", posFrom);
+    ...mapActions('flow', ['saveStart', 'saveEnd', 'saveDrag']),
+    setDrag(val){
+      this.saveDrag(val)
+    },
+    startLink(position, obj) {
+      this.saveStart({ ...this.obj, position})
+      console.log("posFrom", position);
       console.log("obj", obj);
       console.log("document.startLinkId", document.startLinkId);
-      this.model.links.push({ idFrom: obj.id, idTo: "", posFrom });
+      this.model.links.push({ idFrom: obj.id, idTo: "", posFrom: position });
       document.startLinkId = obj.id;
-      document.posFrom = posFrom;
+      document.posFrom = position;
       this.$emit("startLink", obj);
       this.$forceUpdate();
     },
-    endLink(obj) {
+    endLink(obj, position) {
+      console.log('position', position)
+      this.saveEnd({ ...this.obj, position})
       console.log("endlink", obj);
       console.log("document.startLinkId", document.startLinkId);
       this.$emit("endLink", document.startLinkId, obj.id, {
         idTo: obj.id,
-        posTo: "top",
+        posTo: position || 'top',
       });
     },
     setLink(link) {

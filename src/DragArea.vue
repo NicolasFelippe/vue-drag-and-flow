@@ -30,7 +30,6 @@
       icon-off
       @startLink="startLink"
       @endLink="endLink"
-      @drag="drag"
       :group="group"
       @select="
         (value) => {
@@ -51,6 +50,8 @@
         v-for="(link, index) in links"
         :key="index"
         :dasharray="link.dasharray"
+        :link="link"
+        :idFrom="link.posFrom"
         :from="{
           node: nodes.find((e) => e.id === link.idFrom),
           pos: link.posFrom,
@@ -78,6 +79,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import Base from "./components/layout/BaseContent.vue";
 import LinePath from "./components/LinePath";
 
@@ -120,16 +122,18 @@ export default {
     };
   },
   mounted() {
-    this.$refs["drop-area" + this.group].addNode = this.addNode;
+    this.$refs["drop-area" + this.group].addNode = this.addObject;
   },
   methods: {
+    ...mapActions('flow', ['addNode']),
     drag(drag) {
       console.log("drag", drag);
     },
-    addNode(node) {
+    addObject(node) {
       node.id = this.getNewId();
       this.nodes.push(node);
-      console.log("add", node);
+      this.addNode(node)
+      // console.log("add", node);
     },
     startLink(from) {
       this.nodes.find((e) => e.id === from.id).links = from.links;

@@ -66,7 +66,7 @@ export default {
         this.fromElement.y1 = (document.getElementById(this.from.node.id + this.from.pos).offsetTop + document.getElementById(this.from.node.id + this.from.pos).parentElement.offsetTop + document.getElementById(this.from.node.id + this.from.pos).parentElement.parentElement.offsetTop)
         this.fromElement.x1 = (document.getElementById(this.from.node.id + this.from.pos).offsetLeft + document.getElementById(this.from.node.id + this.from.pos).parentElement.offsetLeft + document.getElementById(this.from.node.id + this.from.pos).parentElement.parentElement.offsetLeft)
         */
-       
+
         let positionFrom = this.getRecursiveParentUntilProperty(
           this.from,
           "className",
@@ -108,18 +108,21 @@ export default {
     },
     getRecursiveParentUntilProperty(object, property, value) {
       let result = { y: 0, x: 0 };
-      let element = document.getElementById(object.node.id + object.pos);
-      let dotTop = document.getElementById(object.node.id + 'top-losango');
-      if(dotTop){
-        this.isLosango = true
-        element = dotTop
-      } else {
-        this.isLosango = false
-      }
+      const elementId = object.node.id + object.pos
+      console.log('iddddddd::::::::', elementId)
+      let element = document.getElementById(elementId);
+      console.log("element", element);
+      let dotTop = document.getElementById(object.node.id + "top-losango");
       console.log("dotTop", dotTop);
+      if (dotTop) {
+        this.isLosango = true;
+        element = dotTop;
+      } else {
+        this.isLosango = false;
+      }
       do {
         console.log("estou aqui");
-        const plus = this.isLosango ?  12 : 2
+        const plus = this.isLosango ? 12 : 2;
         result.y += element.offsetTop - plus;
         result.x += element.offsetLeft;
         element = element.offsetParent;
@@ -154,8 +157,8 @@ export default {
         "id",
         "app"
       );
-      console.log('this.toElement', this.toElement)
-      console.log('value', this.toElement)
+      console.log("this.toElement", this.toElement);
+      console.log("value", this.toElement);
       this.toElement.y2 = event.pageY - value.y;
       this.toElement.x2 = event.pageX - value.x;
       this.toElement.el = { clientWidth: 100 };
@@ -163,8 +166,8 @@ export default {
       this.update();
     },
     getLineHorizontalSize() {
-      const valueOn = this.isLosango ? -40 : 7
-      const valueOff = this.isLosango ? -47 : 1
+      const valueOn = this.isLosango ? -40 : 7;
+      const valueOff = this.isLosango ? -47 : 1;
       return this.toElement.x2 + (this.isLeftToRight() ? valueOn : valueOff);
     },
     isLeftToRight() {
@@ -195,7 +198,7 @@ export default {
       */
       let coefSize = 10;
       if (this.fromElement.id === this.toElement.id) {
-         console.log(' if')
+        console.log(" if");
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1}
           V${this.fromElement.y1 + coefSize}
@@ -217,7 +220,7 @@ export default {
           V${this.toElement.y2 - 5}
           `;
       } else if (this.toElement.y2 - this.fromElement.y1 > 20) {
-         console.log('else if')
+        console.log("else if");
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1} 
           V${this.getLineVerticalSize()} 
@@ -240,7 +243,7 @@ export default {
           sizeParam =
             this.toElement.el.clientWidth / this.fromElement.el.clientWidth;
         }
-        console.log('else')
+        console.log("else");
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1}
           V${this.fromElement.y1 + coefSize}
