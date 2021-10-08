@@ -86,51 +86,57 @@ export default {
           content: 'Start',
           start: true,
           backgroundColorIcon: '#1BA345',
-          links: []
+          links: [],
+          type: 'rectangle'
         },
         {
           icon: ['fab','chrome'],
           content: 'Open browse',
           class: 'id792',
-          links: []
+          links: [],
+          type: 'rectangle'
         },
         {
           icon: 'tag',
           content: 'Find tag',
           class: 'id792',
-          links: []
+          links: [],
+          type: 'losango'
         },
         {
           icon: 'mouse-pointer',
           content: 'Action tag',
           class: 'id792',
-          links: []
+          links: [],
+          type: 'losango'
         },
         {
           icon: 'qrcode',
           content: 'Captcha solver',
-          width: '150px',
-          links: []
+          links: [],
+          type: 'losango'
         },
         {
           icon: 'comment-alt',
           content: 'Screen Message',
           class: 'id792',
-          links: []
+          links: [],
+          type: 'losango'
         },
         {
           icon: 'bolt',
           content: 'Trigger',
           class: 'id792',
           backgroundColorIcon: '#FEC001',
-          links: []
+          links: [],
+          type: 'rectangle'
         },
         {
           icon: 'code-branch',
           content: 'Condition',
-          width: '150px',
           condition: true,
-          links: []
+          links: [],
+          type: 'rectangle'
         },
         {
           icon: 'flag',
@@ -138,7 +144,8 @@ export default {
           backgroundColorIcon: '#DE3E44',
           status: 'error',
           end: true,
-          links: []
+          links: [],
+          type: 'rectangle'
         }
       ]
     }
