@@ -115,6 +115,13 @@ export default {
       deep: true,
     },
   },
+  mounted () {
+    console.log(this.$refs.node)
+    // this.$refs.node.$el.addEventListener('onmousedown', this.dragMouseDown)
+    // this.$refs.node.$el.addEventListener('ontouchstart', this.dragMouseDown)
+    this.$refs.node.$el.onmousedown = this.dragMouseDown;
+    this.$refs.node.$el.ontouchstart = this.dragMouseDown;
+  },
   computed: {
     ...mapGetters('flow', ['getEndLink', 'getStartLink']),
     compModel() {
@@ -139,6 +146,49 @@ export default {
   },
   methods: {
     ...mapActions('flow', ['saveStart', 'saveEnd', 'saveDrag']),
+    dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      this.pos3 = e.clientX;
+      this.pos4 = e.clientY;
+
+      // this.$refs.node.$el.addEventListener('onmouseup', this.closeDragElement)
+      // this.$refs.node.$el.addEventListener('onmousemove', this.elementDrag)
+      // this.$refs.node.$el.addEventListener('ontouchend', this.closeDragElement)
+      // this.$refs.node.$el.addEventListener('ontouchmove', this.elementDrag)
+       this.$refs.node.$el.onmouseup = this.closeDragElement;
+       this.$refs.node.$el.onmousemove = this.elementDrag;
+
+       this.$refs.node.$el.ontouchend = this.closeDragElement;
+       this.$refs.node.$el.ontouchmove = this.elementDrag;
+      this.$emit("drag", this.obj);
+    },
+    elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      if (e.clientX) {
+        this.pos1 = this.pos3 - e.clientX;
+        this.pos2 = this.pos4 - e.clientY;
+        this.pos3 = e.clientX;
+        this.pos4 = e.clientY;
+      } else {
+        this.pos1 = this.pos3 - event.changedTouches[0].clientX;
+        this.pos2 = this.pos4 - event.changedTouches[0].clientY;
+        this.pos3 = event.changedTouches[0].clientX;
+        this.pos4 = event.changedTouches[0].clientY;
+      }
+      this.obj.x = this.$refs.node.$el.offsetTop - this.pos2;
+      this.obj.y = this.$refs.node.$el.offsetLeft - this.pos1;
+      this.$refs.node.$el.style.top = this.obj.x + "px";
+      this.$refs.node.$el.style.left = this.obj.y + "px";
+    },
+    closeDragElement() {
+      this.$refs.node.$el.onmouseup = null;
+      this.$refs.node.$el.onmousemove = null;
+      this.$refs.node.$el.ontouchend = null;
+      this.$refs.node.$el.ontouchmove = null;
+      this.$emit("drag", false);
+    },
     setDrag(val){
       this.saveDrag(val)
     },
@@ -167,6 +217,7 @@ export default {
       this.model.link = link;
     },
     select(obj) {
+      console.log('refd', this.$refs.node)
       this.$emit("select", obj);
       if (document.startLinkId !== obj.id) {
         this.endLink(obj);

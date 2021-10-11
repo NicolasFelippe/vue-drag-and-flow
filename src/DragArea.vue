@@ -1,51 +1,54 @@
 <template>
   <div
+    :id="'drop-area' + group"
     :ref="'drop-area' + group"
     :class="`drop-area`"
-    :id="'drop-area' + group"
     :style="getColorGrid()"
   >
     <Base
       v-for="(node, index) in nodes"
       :key="index"
       :obj="node"
-      @input="
-        (value) => {
-          nodes[index] = value;
-        }
-      "
       :class="node.class"
-      :backgroundColorIcon="node.backgroundColorIcon"
-      :topConnected="node.topConnected"
-      :bottomConnected="node.bottomConnected"
+      :background-color-icon="node.backgroundColorIcon"
+      :top-connected="node.topConnected"
+      :bottom-connected="node.bottomConnected"
       :width="node.width"
       :height="node.height"
       :status="node.status"
-      :noStatus="node.noStatus"
+      :no-status="node.noStatus"
       :start="node.start"
       :end="node.end"
       :condition="node.condition"
       :color="nodeColorBackground"
       :type="node.type"
       icon-off
+      :group="group"
+      :active="selected && selected.id === node.id"
+      @input="
+        (value) => {
+          nodes[index] = value;
+        }
+      "
       @startLink="startLink"
       @endLink="endLink"
-      :group="group"
       @select="
         (value) => {
           selected = value;
           $emit('selected', selected);
         }
       "
-      :active="selected && selected.id === node.id"
     />
     <span
-      style="position: absolute; top: 40%; left: 40%; font-size: 40px"
       v-if="nodes.length === 0"
+      style="position: absolute; top: 40%; left: 40%; font-size: 40px"
     >
       drop itens here
     </span>
-    <svg :height="height" :width="width">
+    <svg
+      :height="height"
+      :width="width"
+    >
       <LinePath
         v-for="(link, index) in links"
         :key="index"
@@ -71,7 +74,10 @@
           markerHeight="10"
           orient="auto"
         >
-          <path d="M 0 0 L 10 5 L 0 10 z" :fill="lineColor" />
+          <path
+            d="M 0 0 L 10 5 L 0 10 z"
+            :fill="lineColor"
+          />
         </marker>
       </defs>
     </svg>
@@ -79,118 +85,118 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-import Base from "./components/layout/BaseContent.vue";
-import LinePath from "./components/LinePath";
+import { mapActions } from 'vuex'
+import Base from './components/layout/BaseContent.vue'
+import LinePath from './components/LinePath'
 
 export default {
-  name: "DragArea",
+  name: 'DragArea',
+  components: {
+    Base,
+    LinePath
+  },
   props: {
     group: {
       type: String,
-      default: "group",
+      default: 'group'
     },
     width: {
       type: Number,
-      default: 1080,
+      default: 1080
     },
     height: {
       type: Number,
-      default: 1000,
+      default: 1000
     },
     nodeColorBackground: {
       type: String,
-      default: "",
+      default: ''
     },
     lineColor: {
       type: String,
-      default: "#fff",
+      default: '#fff'
     },
     gridColor: {
       type: String,
-      default: null,
-    },
+      default: null
+    }
   },
-  components: {
-    Base,
-    LinePath,
-  },
-  data() {
+  data () {
     return {
       selected: null,
-      nodes: [],
-    };
+      nodes: []
+    }
   },
-  mounted() {
-    this.$refs["drop-area" + this.group].addNode = this.addObject;
+  computed: {
+    links () {
+      return this.nodes
+        .filter((e) => e.links)
+        .map((e) => e.links)
+        .flat()
+    }
+  },
+  mounted () {
+    this.$refs['drop-area' + this.group].addNode = this.addObject
   },
   methods: {
     ...mapActions('flow', ['addNode']),
-    drag(drag) {
-      console.log("drag", drag);
+    drag (drag) {
+      console.log('drag', drag)
     },
-    addObject(node) {
-      node.id = this.getNewId();
-      this.nodes.push(node);
+    addObject (node) {
+      node.id = this.getNewId()
+      this.nodes.push(node)
       this.addNode(node)
       // console.log("add", node);
     },
-    startLink(from) {
-      this.nodes.find((e) => e.id === from.id).links = from.links;
-      this.$forceUpdate();
+    startLink (from) {
+      this.nodes.find((e) => e.id === from.id).links = from.links
+      this.$forceUpdate()
     },
-    endLink(fromId, toId, link) {
-      console.log("fromId", fromId);
-      console.log("toId", toId);
-      console.log("link", link);
-      console.log("this.nodes", this.nodes);
+    endLink (fromId, toId, link) {
+      console.log('fromId', fromId)
+      console.log('toId', toId)
+      console.log('link', link)
+      console.log('this.nodes', this.nodes)
       console.log(
-        "search",
+        'search',
         this.nodes
           .find((e) => e.id === fromId)
           ?.links.find((e) => e.posFrom === document.posFrom)
-      );
+      )
       if (document.startLinkId) {
         Object.assign(
           this.nodes
             .find((e) => e.id === fromId)
             ?.links.find((e) => e.posFrom === document.posFrom),
           link
-        );
+        )
         this.nodes.find((e) => e.id === fromId).links = this.nodes
           .find((e) => e.id === fromId)
-          .links.filter((e) => e.idTo !== "");
-        this.nodes.find((e) => e.id === toId).topConnected = true;
-        this.nodes.find((e) => e.id === fromId).bottomConnected = true;
+          .links.filter((e) => e.idTo !== '')
+        this.nodes.find((e) => e.id === toId).topConnected = true
+        this.nodes.find((e) => e.id === fromId).bottomConnected = true
 
-        document.startLinkId = null;
-        document.posFrom = null;
-        this.$forceUpdate();
+        document.startLinkId = null
+        document.posFrom = null
+        this.$forceUpdate()
       }
     },
-    getNewId() {
-      return "_" + Math.random().toString(36).substr(2, 9);
+    getNewId () {
+      return '_' + Math.random().toString(36).substr(2, 9)
     },
-    getNodes() {
-      return this.nodes;
+    getNodes () {
+      return this.nodes
     },
-    getColorGrid() {
+    getColorGrid () {
       return `
       background-image:
       linear-gradient(to right, ${
-        this.gridColor ? this.gridColor : "transparent"
-      } 1px, transparent 1px);`;
-    },
-  },
-  computed: {
-    links() {
-      return this.nodes
-        .filter((e) => e.links)
-        .map((e) => e.links)
-        .flat();
-    },
-  },
-};
+  this.gridColor ? this.gridColor : 'transparent'
+} 1px, transparent 1px);`
+    }
+  }
+}
 </script>
 
 <style>

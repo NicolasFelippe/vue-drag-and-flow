@@ -90,11 +90,11 @@
         {{ obj.description }}
       </p>
     </div>
-    <div
+    <!-- <div
       id="status"
       :style="`background-color: ${statusColor} `"
       v-if="!obj.noStatus"
-    ></div>
+    ></div> -->
   </div>
 </template>
 
@@ -167,58 +167,8 @@ export default {
   },
   data() {
     return {
-      elmnt: null,
-      pos1: 0,
-      pos2: 0,
-      pos3: 0,
-      pos4: 0,
       sizeConnectors: 6,
     };
-  },
-  mounted() {
-    this.elmnt = this.$refs.node;
-    this.elmnt.onmousedown = this.dragMouseDown;
-    this.elmnt.ontouchstart = this.dragMouseDown;
-  },
-  methods: {
-    dragMouseDown(e) {
-      e = e || window.event;
-      e.preventDefault();
-      this.pos3 = e.clientX;
-      this.pos4 = e.clientY;
-      document.onmouseup = this.closeDragElement;
-      document.onmousemove = this.elementDrag;
-
-      document.ontouchend = this.closeDragElement;
-      document.ontouchmove = this.elementDrag;
-      this.$emit("drag", this.obj);
-    },
-    elementDrag(e) {
-      e = e || window.event;
-      e.preventDefault();
-      if (e.clientX) {
-        this.pos1 = this.pos3 - e.clientX;
-        this.pos2 = this.pos4 - e.clientY;
-        this.pos3 = e.clientX;
-        this.pos4 = e.clientY;
-      } else {
-        this.pos1 = this.pos3 - event.changedTouches[0].clientX;
-        this.pos2 = this.pos4 - event.changedTouches[0].clientY;
-        this.pos3 = event.changedTouches[0].clientX;
-        this.pos4 = event.changedTouches[0].clientY;
-      }
-      this.obj.x = this.elmnt.offsetTop - this.pos2;
-      this.obj.y = this.elmnt.offsetLeft - this.pos1;
-      this.elmnt.style.top = this.obj.x + "px";
-      this.elmnt.style.left = this.obj.y + "px";
-    },
-    closeDragElement() {
-      document.onmouseup = null;
-      document.onmousemove = null;
-      document.ontouchend = null;
-      document.ontouchmove = null;
-      this.$emit("drag", false);
-    },
   },
 };
 </script>
