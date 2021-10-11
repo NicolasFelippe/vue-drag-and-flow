@@ -225,6 +225,8 @@ export default {
 
 <style scoped>
 .node {
+  width: 150px;
+  height: 60px;
   position: absolute;
   display: flex;
   justify-content: flex-start;

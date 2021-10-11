@@ -237,11 +237,10 @@ export default {
   justify-content: center;
   cursor: move;
   background-color: #303030;
-  border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.2) 0px 8px 24px;
   width: 100px;
   height: 100px;
-  border-radius: 50px;
+  border-radius: 50%;
 }
 #content {
   display: flex;
