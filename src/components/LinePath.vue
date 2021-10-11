@@ -114,23 +114,17 @@ export default {
       let dotTop = null;
       this.isLosango = false;
       const elementId = object.node.id + object.pos;
-      console.log("iddddddd::::::::", elementId);
       let element = document.getElementById(elementId);
-      console.log("element", element);
-      console.log("object.pos", object.pos);
       this.isBottomNo = object.pos === "bottomNo";
       this.isBottomYes = object.pos === "bottomYes";
-      console.log(this.isBottomYes);
       if (!this.isBottomNo && !this.isBottomYes) {
         dotTop = document.getElementById(object.node.id + "top-losango");
       }
-      console.log("dotTop", dotTop);
       if (dotTop) {
         this.isLosango = true;
         element = dotTop;
       }
       do {
-        console.log("estou aqui");
         const plusTop = this.isLosango ? 12 : 2;
         let plusLeft = this.isBottomNo ? -19 : this.isBottomYes ? -7 : 0;
         result.y += element.offsetTop - plusTop;
@@ -167,8 +161,6 @@ export default {
         "id",
         "app"
       );
-      console.log("this.toElement", this.toElement);
-      console.log("value", this.toElement);
       this.toElement.y2 = event.pageY - value.y;
       this.toElement.x2 = event.pageX - value.x;
       this.toElement.el = { clientWidth: 100 };
@@ -208,7 +200,6 @@ export default {
       */
       let coefSize = 10;
       if (this.fromElement.id === this.toElement.id) {
-        console.log(" if");
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1}
           V${this.fromElement.y1 + coefSize}
@@ -230,9 +221,6 @@ export default {
           V${this.toElement.y2 - 5}
           `;
       } else if (this.toElement.y2 - this.fromElement.y1 > 20) {
-        console.log("else if");
-        console.log("isBottomNo", this.isBottomNo);
-        console.log("this.isBottomYes", this.isBottomYes);
         const t = this.isBottomYes ? 300 : 3;
         return `
           M ${this.fromElement.x1 + t},${this.fromElement.y1 - 10} 
@@ -256,7 +244,6 @@ export default {
           sizeParam =
             this.toElement.el.clientWidth / this.fromElement.el.clientWidth;
         }
-        console.log("else");
         return `
           M ${this.fromElement.x1 + 3},${this.fromElement.y1}
           V${this.fromElement.y1 + coefSize}

@@ -116,9 +116,6 @@ export default {
     },
   },
   mounted () {
-    console.log(this.$refs.node)
-    // this.$refs.node.$el.addEventListener('onmousedown', this.dragMouseDown)
-    // this.$refs.node.$el.addEventListener('ontouchstart', this.dragMouseDown)
     this.$refs.node.$el.onmousedown = this.dragMouseDown;
     this.$refs.node.$el.ontouchstart = this.dragMouseDown;
   },
@@ -194,9 +191,6 @@ export default {
     },
     startLink(position, obj) {
       this.saveStart({ ...this.obj, position})
-      console.log("posFrom", position);
-      console.log("obj", obj);
-      console.log("document.startLinkId", document.startLinkId);
       this.model.links.push({ idFrom: obj.id, idTo: "", posFrom: position });
       document.startLinkId = obj.id;
       document.posFrom = position;
@@ -204,10 +198,7 @@ export default {
       this.$forceUpdate();
     },
     endLink(obj, position) {
-      console.log('position', position)
       this.saveEnd({ ...this.obj, position})
-      console.log("endlink", obj);
-      console.log("document.startLinkId", document.startLinkId);
       this.$emit("endLink", document.startLinkId, obj.id, {
         idTo: obj.id,
         posTo: position || 'top',
@@ -217,7 +208,6 @@ export default {
       this.model.link = link;
     },
     select(obj) {
-      console.log('refd', this.$refs.node)
       this.$emit("select", obj);
       if (document.startLinkId !== obj.id) {
         this.endLink(obj);

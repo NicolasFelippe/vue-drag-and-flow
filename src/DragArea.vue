@@ -147,23 +147,12 @@ export default {
       node.id = this.getNewId()
       this.nodes.push(node)
       this.addNode(node)
-      // console.log("add", node);
     },
     startLink (from) {
       this.nodes.find((e) => e.id === from.id).links = from.links
       this.$forceUpdate()
     },
     endLink (fromId, toId, link) {
-      console.log('fromId', fromId)
-      console.log('toId', toId)
-      console.log('link', link)
-      console.log('this.nodes', this.nodes)
-      console.log(
-        'search',
-        this.nodes
-          .find((e) => e.id === fromId)
-          ?.links.find((e) => e.posFrom === document.posFrom)
-      )
       if (document.startLinkId) {
         Object.assign(
           this.nodes
