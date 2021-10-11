@@ -50,6 +50,9 @@ export default {
     return {
       fromElement: null,
       toElement: null,
+      isLosango: false,
+      isBottomNo: false,
+      isBottomYes: false,
     };
   },
   mounted() {
@@ -108,23 +111,30 @@ export default {
     },
     getRecursiveParentUntilProperty(object, property, value) {
       let result = { y: 0, x: 0 };
-      const elementId = object.node.id + object.pos
-      console.log('iddddddd::::::::', elementId)
+      let dotTop = null;
+      this.isLosango = false;
+      const elementId = object.node.id + object.pos;
+      console.log("iddddddd::::::::", elementId);
       let element = document.getElementById(elementId);
       console.log("element", element);
-      let dotTop = document.getElementById(object.node.id + "top-losango");
+      console.log("object.pos", object.pos);
+      this.isBottomNo = object.pos === "bottomNo";
+      this.isBottomYes = object.pos === "bottomYes";
+      console.log(this.isBottomYes);
+      if (!this.isBottomNo && !this.isBottomYes) {
+        dotTop = document.getElementById(object.node.id + "top-losango");
+      }
       console.log("dotTop", dotTop);
       if (dotTop) {
         this.isLosango = true;
         element = dotTop;
-      } else {
-        this.isLosango = false;
       }
       do {
         console.log("estou aqui");
-        const plus = this.isLosango ? 12 : 2;
-        result.y += element.offsetTop - plus;
-        result.x += element.offsetLeft;
+        const plusTop = this.isLosango ? 12 : 2;
+        let plusLeft = this.isBottomNo ? -19 : this.isBottomYes ? -7 : 0;
+        result.y += element.offsetTop - plusTop;
+        result.x += element.offsetLeft - plusLeft;
         element = element.offsetParent;
       } while (element && element[property].includes(value));
       return result;
@@ -221,8 +231,11 @@ export default {
           `;
       } else if (this.toElement.y2 - this.fromElement.y1 > 20) {
         console.log("else if");
+        console.log("isBottomNo", this.isBottomNo);
+        console.log("this.isBottomYes", this.isBottomYes);
+        const t = this.isBottomYes ? 300 : 3;
         return `
-          M ${this.fromElement.x1 + 3},${this.fromElement.y1} 
+          M ${this.fromElement.x1 + t},${this.fromElement.y1 - 10} 
           V${this.getLineVerticalSize()} 
           ${this.getBreakOne()} 
           H${this.getLineHorizontalSize()} 
